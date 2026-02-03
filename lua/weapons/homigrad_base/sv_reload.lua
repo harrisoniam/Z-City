@@ -57,7 +57,6 @@ local function SafeCheck(ply, ent, dist)
 
 	local org = ply.organism
 	if org.rarmamputated and org.larmamputated then FailSafe(ply) return false end
-	print(4)
 	if not ply:GetNW2Bool("FloorReloading", false) then FailSafe(ply) return false end
 
 	return true
