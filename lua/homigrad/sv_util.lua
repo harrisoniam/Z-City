@@ -1586,7 +1586,7 @@ hook.Add("Org Think", "BodyTemperature", function(owner, org, timeValue) -- пе
 	org.temperature = math.Approach(org.temperature, hg.TranslateToBodyTemp(temp, org), org.tempchanging)
 
 	-- При холоде
-	if owner:Alive() and not org.otrub and isFreezing and org.temperature < 36 then
+	if owner:Alive() and not org.otrub and org.temperature < 36 then
 		org.FreezeSndCD = org.FreezeSndCD or CurTime() + math.random(5, 15)
 		
 		if org.FreezeSndCD < CurTime() then
@@ -1597,13 +1597,13 @@ hook.Add("Org Think", "BodyTemperature", function(owner, org, timeValue) -- пе
 	end
 	
 	org.FreezeDMGCd = org.FreezeDMGCd or CurTime()
-	if isFreezing and org.temperature < 35 and org.FreezeDMGCd < CurTime() then
+	if org.temperature < 35 and org.FreezeDMGCd < CurTime() then
 		org.painadd = org.painadd + math.Rand(0, 1) * ((35 - org.temperature) / 35 * 4 + 1)
 		org.FreezeDMGCd = CurTime() + 0.5
 	end
 
 	-- При жаре
-	if owner:Alive() and isHeating and org.temperature > 40 then
+	if owner:Alive() and org.temperature > 40 then
 		org.VomitCD = org.VomitCD or CurTime() + math.random(35, 75)
 		
 		if org.VomitCD < CurTime() then
@@ -1617,7 +1617,7 @@ hook.Add("Org Think", "BodyTemperature", function(owner, org, timeValue) -- пе
 	end
 
 	org.HeatDMGCd = org.HeatDMGCd or CurTime()
-	if isHeating and org.temperature > 38 and org.HeatDMGCd < CurTime() and not org.otrub then
+	if org.temperature > 38 and org.HeatDMGCd < CurTime() and not org.otrub then
 		org.painadd = org.painadd + math.Rand(0.5, 1) * ((org.temperature - 38) / 38 * 6 + 1)
 		org.HeatDMGCd = CurTime() + 0.5
 	end
