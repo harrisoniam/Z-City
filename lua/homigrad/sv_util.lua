@@ -1534,7 +1534,7 @@ hook.Add("Org Think", "BodyTemperature", function(owner, org, timeValue) -- пе
 		start = ent:GetPos() + vector_up * 15,
 		endpos = ent:GetPos() + vector_up * 999999,
 		mask = MASK_SOLID_BRUSHONLY
-	} ).HitSky
+	} ).HitSky and !owner:InVehicle()
 
 	org.temperature = org.temperature or 36.7
 
@@ -1549,7 +1549,7 @@ hook.Add("Org Think", "BodyTemperature", function(owner, org, timeValue) -- пе
 
 	local warming = org.stamina.sub > 0 and 0.5 or 0
 	local ownerpos = owner:GetPos()
-	for i, ent in ipairs(ents.FindInSphere(ownerpos, 200)) do
+	for i, ent in ipairs(ents.FindInSphere(ownerpos, 300)) do
 		local warmingent = warmingEnts[ent:GetClass()]
 		if warmingent then
 			--org.temperature = org.temperature + timeValue * (warmingEnts[ent:GetClass()] / 50 * (1 - ent:GetPos():Distance(owner:GetPos()) / 200))
