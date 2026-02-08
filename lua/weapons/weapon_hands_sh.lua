@@ -1521,9 +1521,9 @@ function SWEP:AttackFront(special_attack, rand)
 			if Ent:IsPlayer() and IsValid(Ent:GetActiveWeapon()) and Ent:GetActiveWeapon().GetBlocking and Ent:GetActiveWeapon():GetBlocking() and not RagdollOwner(Ent) then
 				local snd = "Flesh.ImpactSoft"
 				if isZomb then
-					snd, pitch = "npc/zombie/claw_strike"..math.random(3)..".wav"
-				elseif isZomb then
-					snd, pitch = "pwb/weapons/knife/hit"..math.random(1,4)..".wav"
+					snd = "npc/zombie/claw_strike"..math.random(3)..".wav"
+				elseif owner.PlayerClassName == "furry" then
+					snd = "pwb/weapons/knife/hit"..math.random(4)..".wav"
 				end
 				sound.Play(snd, HitPos, 65, math.random(90, 110))
 				if owner:IsBerserk() then
@@ -1532,9 +1532,9 @@ function SWEP:AttackFront(special_attack, rand)
 			else
 				local snd = "Flesh.ImpactHard"
 				if isZomb then
-					snd, pitch = "npc/zombie/claw_strike"..math.random(3)..".wav"
-				elseif isZomb then
-					snd, pitch = "pwb/weapons/knife/hit"..math.random(1,4)..".wav"
+					snd = "npc/zombie/claw_strike"..math.random(3)..".wav"
+				elseif owner.PlayerClassName == "furry" then then
+					snd = "pwb/weapons/knife/hit"..math.random(4)..".wav"
 				end
 				sound.Play(snd, HitPos, 65, math.random(90, 110))
 				if owner:IsBerserk() then
@@ -1555,9 +1555,9 @@ function SWEP:AttackFront(special_attack, rand)
 		else
 			local snd = "Flesh.ImpactSoft"
 			if isZomb then
-				snd, pitch = "npc/zombie/claw_strike"..math.random(3)..".wav"
-			elseif isZomb then
-				snd, pitch = "pwb/weapons/knife/hitwall.wav"
+				snd = "npc/zombie/claw_strike"..math.random(3)..".wav"
+			elseif owner.PlayerClassName == "furry" then
+				snd = "pwb/weapons/knife/hitwall.wav"
 			end
 			sound.Play(snd, HitPos, 65, math.random(90, 110))
 			if owner:IsBerserk() then
