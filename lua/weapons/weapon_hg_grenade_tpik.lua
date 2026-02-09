@@ -456,8 +456,16 @@ function SWEP:CreateSpoon(entownr)
 		entownr:EmitSound("weapons/m67/m67_spooneject.wav",65)
 
 		if self.SpoonSounds then
-			for k,v in ipairs(self.SpoonSounds) do
-				self:GetOwner():EmitSound(v[1],v[2])
+			for k, v in ipairs(self.SpoonSounds) do
+				self:GetOwner():EmitSound(v[1], v[2])
+
+				if v[3] then
+					local effectData = EffectData()
+					effectData:SetOrigin(entasd:GetPos())
+					effectData:SetScale(0.04)
+					effectData:SetEntity(entasd)
+					util.Effect("eff_jack_genericboom", effectData, true, true)
+				end
 			end
 		end
 
@@ -473,8 +481,16 @@ function SWEP:CreateSpoon(entownr)
 		entasd:EmitSound("weapons/m67/m67_spooneject.wav",65)
 
 		if self.SpoonSounds then
-			for k,v in ipairs(self.SpoonSounds) do
-				self:GetOwner():EmitSound(v[1],v[2])
+			for k, v in ipairs(self.SpoonSounds) do
+				self:GetOwner():EmitSound(v[1], v[2])
+
+				if v[3] then
+					local effectData = EffectData()
+					effectData:SetOrigin(entasd:GetPos())
+					effectData:SetScale(0.04)
+					effectData:SetEntity(entasd)
+					util.Effect("eff_jack_genericboom", effectData, true, true)
+				end
 			end
 		end
 
