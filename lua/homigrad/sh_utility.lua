@@ -878,16 +878,16 @@ local IsValid = IsValid
 	end
 --//
 --\\ DrawPlayerRagdoll
-	local hg_ragdollcombat = ConVarExists("hg_ragdollcombat") and GetConVar("hg_ragdollcombat") or CreateConVar("hg_ragdollcombat", 0, FCVAR_REPLICATED, "ragdoll combat", 0, 1)
+	local hg_ragdollcombat = ConVarExists("hg_ragdollcombat") and GetConVar("hg_ragdollcombat") or CreateConVar("hg_ragdollcombat", 0, FCVAR_REPLICATED, "Toggle ragdoll combat-like ragdoll mode (walking, running in ragdoll, etc.)", 0, 1)
 	
 	function hg.RagdollCombatInUse(ply)
 		return hg_ragdollcombat:GetBool() and IsValid(ply.FakeRagdoll)
 	end
 	
-	local hg_firstperson_ragdoll = ConVarExists("hg_firstperson_ragdoll") and GetConVar("hg_firstperson_ragdoll") or CreateConVar("hg_firstperson_ragdoll", 0, FCVAR_ARCHIVE, "first person ragdoll", 0, 1)
-	local hg_firstperson_death = ConVarExists("hg_firstperson_death") and GetConVar("hg_firstperson_death") or CreateClientConVar("hg_firstperson_death", "0", true, false, "first person death", 0, 1)
-	local hg_gopro = ConVarExists("hg_gopro") and GetConVar("hg_gopro") or CreateClientConVar("hg_gopro", "0", true, false, "gopro camera", 0, 1)
-	local hg_deathfadeout = CreateClientConVar("hg_deathfadeout", "1", true, true, "Fade screen and sound on death", 0, 1)
+	local hg_firstperson_ragdoll = ConVarExists("hg_firstperson_ragdoll") and GetConVar("hg_firstperson_ragdoll") or CreateConVar("hg_firstperson_ragdoll", "0", FCVAR_ARCHIVE, "Toggle first-person ragdoll camera view", 0, 1) --!! unused??
+	local hg_firstperson_death = ConVarExists("hg_firstperson_death") and GetConVar("hg_firstperson_death") or CreateClientConVar("hg_firstperson_death", "0", true, false, "Toggle first-person death camera view", 0, 1)
+	local hg_gopro = ConVarExists("hg_gopro") and GetConVar("hg_gopro") or CreateClientConVar("hg_gopro", "0", true, false, "Toggle GoPro-like camera view", 0, 1)
+	local hg_deathfadeout = CreateClientConVar("hg_deathfadeout", "1", true, true, "Toggle screen fade and sound mute on death", 0, 1)
 
 	local vector_full = Vector(1, 1, 1)
 	local vector_small = Vector(0.01, 0.01, 0.01)
@@ -1508,7 +1508,7 @@ local IsValid = IsValid
 		hg.approach_vector = approach_vector
 	--//
 
-	local hg_movement_stamina_debuff = CreateConVar("hg_movement_stamina_debuff","0.3",{FCVAR_REPLICATED,FCVAR_ARCHIVE,FCVAR_NOTIFY},"movement debuff when low stamina",0,1)
+	local hg_movement_stamina_debuff = CreateConVar("hg_movement_stamina_debuff","0.3",{FCVAR_REPLICATED,FCVAR_ARCHIVE,FCVAR_NOTIFY},"Multiply movement debuff when having low stamina",0,1)
 	local vecZero = Vector()
 	local vomitVPAng = Angle(1,0,0)
 	hook.Add("SetupMove", "HG(StartCommand)", function(ply, mv, cmd)
@@ -2063,14 +2063,77 @@ local IsValid = IsValid
 		if self.ReloadSound then util.PrecacheSound(self.ReloadSound) end
 	end
 --//
---\\ Faster npcs (does not works)
-	--[[hook.Add("OnEntityCreated", "fasternpcs", function(ent)
-		if IsValid(ent) and ent:IsNPC() then
-			timer.Simple(.1, function()
+--\\ Tough npcs
+	local hg_toughnpcs = CreateConVar("hg_toughnpcs", 0, FCVAR_ARCHIVE + FCVAR_REPLICATED + FCVAR_NOTIFY, "Toggle more health for npcs", 0, 1)
+	local npcToBuff = {
+		["npc_metropolice"] = 100,
+		["npc_combine_s"] = 150,
+		["npc_citizen"] = 100,
+		["npc_kleiner"] = 100,
+		["npc_magnusson"] = 100,
+		["npc_eli"] = 100,
+		["npc_odessa"] = 100,
+		["npc_breen"] = 100,
+		["npc_zombie"] = 120,
+		["npc_fastzombie"] = 90,
+		["npc_headcrab"] = 50,
+		["npc_headcrab_fast"] = 40,
+		["npc_headcrab_black"] = 70,
+		["npc_fastzombie_torso"] = 80,
+		["npc_zombie_torso"] = 110,
+		["npc_manhack"] = 50,
+		["npc_antlion_grub"] = 20,
+	}
+	hook.Add("OnEntityCreated", "toughnpcs", function(ent)
+		if SERVER and hg_toughnpcs:GetBool() and IsValid(ent) and ent:IsNPC() and npcToBuff[ent:GetClass()] then
+			timer.Simple(0.2, function()
+				if not IsValid(ent) then return end
+
+				ent:SetHealth(npcToBuff[ent:GetClass()])
+				ent:SetMaxHealth(npcToBuff[ent:GetClass()])
 				ent:SetPlaybackRate(2)
+				ent:SetKeyValue("m_flPlaybackSpeed", 2)
+
+				print(ent:Health())
 			end)
 		end
-	end)]]--
+	end)
+--//
+--\\ Lootable npcs
+	--[[ --!! TODO
+	local lootNPCs = {
+		["npc_combine_s"] = {
+			"weapon_hg_stunstick",
+			"weapon_medkit_sh",
+			"weapon_bandage_sh",
+			"weapon_handcuffs",
+			"weapon_walkie_talkie"
+		},
+		["npc_metropolice"] = {
+			"weapon_melee",
+			"weapon_hg_hl2nade_tpik",
+			"weapon_bandage_sh",
+			"weapon_handcuffs"
+		},
+		["npc_citizen"] = {
+			"weapon_smallconsumable",
+			"weapon_bandage_sh",
+			"weapon_painkillers"
+		}
+	}
+	hook.Add("CreateEntityRagdoll", "npcloot", function(ent, rag)
+		local loot = lootNPCs[ent:GetClass()]
+		if IsValid(ent) and IsValid(rag) and ent:IsNPC() and loot then
+			rag.armors = {}
+			rag.inventory = {}
+
+			rag.was_opened = true
+
+			rag.inventory.Weapons = loot or {}
+			rag:SetNetVar("Inventory", rag.inventory )
+		end
+	end)
+	]]
 --//
 --\\ timescale pitch change
 	local cheats = GetConVar( "sv_cheats" )
@@ -2712,7 +2775,7 @@ duplicator.Allow( "homigrad_base" )
     game.AddParticles( "particles/gf2_firework_small_01.pcf" )
 --//
 --\\ Fun commands
-	local hg_thirdperson = ConVarExists("hg_thirdperson") and GetConVar("hg_thirdperson") or CreateConVar("hg_thirdperson", 0, FCVAR_REPLICATED, "thirdperson combat", 0, 1)
+	local hg_thirdperson = ConVarExists("hg_thirdperson") and GetConVar("hg_thirdperson") or CreateConVar("hg_thirdperson", 0, FCVAR_REPLICATED, "Toggle third-person camera view", 0, 1)
 --//
 --\\ Explosion Trace
 	function hg.ExplosionTrace(start,endpos,filter)
