@@ -12,6 +12,8 @@ function CLASS.On(self)
     Appearance.AColthes = ""
     self.CurAppearance = Appearance
 
+    self:SetPlayerColor(Color(205,0,0):ToVector())
+
     local inv = self:GetNetVar("Inventory", {})
     inv["Weapons"] = inv["Weapons"] or {}
     inv["Weapons"]["hg_sling"] = true
@@ -22,7 +24,7 @@ end
 
 function CLASS.Guilt(self, Victim)
     if CLIENT then return end
-
+    
     if Victim:GetPlayerClass() == self:GetPlayerClass() then
         return 1
     end

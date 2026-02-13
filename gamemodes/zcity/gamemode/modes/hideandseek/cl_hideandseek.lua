@@ -52,8 +52,8 @@ function MODE:RenderScreenspaceEffects()
 
 	-- Seeker
 	if team_ == 0 then		
-		if zb.ROUND_START + 41 < CurTime() then return end
-		fade = math.Clamp(zb.ROUND_START + 41 - CurTime(), 0, 1)
+		if zb.ROUND_START + 42 < CurTime() then return end
+		fade = math.Clamp(zb.ROUND_START + 42 - CurTime(), 0, 1)
 	-- Hider
 	elseif team_ == 1 then
 		if zb.ROUND_START + 7.5 < CurTime() then return end

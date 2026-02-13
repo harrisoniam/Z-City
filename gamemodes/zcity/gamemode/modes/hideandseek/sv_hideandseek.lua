@@ -2,7 +2,7 @@ MODE.name = "hideandseek"
 MODE.PrintName = "Hide & Seek"
 
 --MODE.ForBigMaps = false
-MODE.ROUND_TIME = 460
+MODE.ROUND_TIME = 635
 
 MODE.Chance = 0.10
 
@@ -98,9 +98,10 @@ function MODE:ShouldRoundEnd()
 end
 
 
+local swatSpawned = false
 
 function MODE:RoundStart()
-    
+    swatSpawned = false 
 end
 
 local tblweps = {
@@ -236,6 +237,47 @@ function MODE:GiveEquipment()
 end
 
 function MODE:RoundThink()
+    if not swatSpawned and (CurTime() - zb.ROUND_BEGIN) >= 342 then
+        local deadPlayers = {}
+
+        for _, ply in player.Iterator() do
+            if not ply:Alive() and ply:Team() != TEAM_SPECTATOR then
+                table.insert(deadPlayers, ply)
+            end
+        end
+
+		local startpos = self.TPoints and #self.TPoints > 0 and self.TPoints[1].pos or zb:GetRandomSpawn()
+
+		for i = 1, math.min(4, #deadPlayers) do
+            local ply = deadPlayers[i]
+
+            //if self.TPoints and #self.TPoints > 0 then
+                ply:Spawn()
+				ply:SetTeam(2)
+				if !startpos then
+					startpos = ply:GetPos()
+				else
+					hg.tpPlayer(startpos, ply, i, 0)
+				end
+
+                ply:SetPlayerClass("swat")
+				zb.GiveRole(ply, "SWAT", Color(0,0,122))
+				local gun = ply:Give("weapon_ar15")
+                ply:GiveAmmo(gun:GetMaxClip1() * 3, gun:GetPrimaryAmmoType(), true)
+                ply:Give("weapon_medkit_sh")
+                ply:Give("weapon_tourniquet")
+                ply:Give("weapon_walkie_talkie")
+                ply:Give("weapon_hg_flashbang_tpik")
+                hg.AddArmor(ply, "ent_armor_helmet1")
+                hg.AddArmor(ply, "ent_armor_vest4")
+
+                local hands = ply:Give("weapon_hands_sh")
+                ply:SelectWeapon("weapon_hands_sh")
+            //end
+        end
+
+        swatSpawned = true
+    end
 end
 
 function MODE:GetTeamSpawn()
