@@ -58,7 +58,8 @@ hg.settings:AddOpt("Sound","hg_quietshots", "Enable/Disable Quietshoot Sounds (F
 --^^ СТРИНГ ИНПУТ
 hg.settings:AddOpt("Gameplay","hg_old_notificate", "Old Notifications")
 hg.settings:AddOpt("Gameplay","hg_random_appearance", "Enable/Disable Random Appearance")
-hg.settings:AddOpt("Gameplay","hg_cheats", "Enable/Disable Cheats")
+--hg.settings:AddOpt("Gameplay","hg_cheats", "Enable/Disable Cheats")
+hg.settings:AddOpt("Gameplay","hg_opt_seeker", "Opt out of becoming a seeker in Hide & Seek.")
 
 
 function PANEL:Init()

@@ -35,14 +35,28 @@ function MODE:AssignTeams()
 
 	shuffle(players)
 
+	local willingPly = {}
+	local optOutPly = {}
+
+	for _, ply in ipairs(players) do
+		if ply:GetInfoNum("hg_opt_seeker") == 0 then
+			table.insert(willingPly, ply)
+		elseif ply:GetInfoNum("hg_opt_seeker") == 1 then
+			table.insert(optOutPly, ply)
+		else
+			print("How did you get here? You should raise a git issue about this message.")
+			table.insert(willingPly, ply)
+		end
+	end
+
 	-- Set Seekers
 	for i = 1, numSEEKERS do
-		if IsValid(players[i]) then 
+		if IsValid(willingPly[i]) then 
 			players[i]:SetTeam(0) 
 		end
 	end
 
-	-- Set Hiders`
+	-- Set Hiders
 	for i = numSEEKERS + 1, numPlayers do
 		if IsValid(players[i]) then 
 			players[i]:SetTeam(1)
@@ -53,7 +67,7 @@ end
 util.AddNetworkString("hs_start")
 function MODE:Intermission()
 	game.CleanUpMap()
-    math.randomseed(os.time()) -- Potential bug reported by Seekers where they couldn't become a hider. Hopefully this will fix :)
+    
     self:AssignTeams()
 	
 	for k, ply in player.Iterator() do
