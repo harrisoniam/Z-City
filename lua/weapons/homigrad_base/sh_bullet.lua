@@ -231,15 +231,12 @@ end
 
 local hg_potatopc
 
-local shootDecals, shootDecalRand = {
-	--"decals/metal/shot6",
-	--"decals/metal/shot7",
-	"decals/bigshot2",
-	"decals/bigshot4",
-	"decals/bigshot5",
-}, 1
-for i, decal in ipairs(shootDecals) do
-	game.AddDecal("Impact.ShootAdd" .. i, decal)
+local shootDecals, shootDecalRand = {}, 1
+for i = 1, 5 do
+	local mat = "decals/zcity/powder_impact_" .. i
+	table.insert(shootDecals, mat)
+	game.AddDecal("Impact.ShootAdd" .. i, mat)
+
 	shootDecalRand = i
 end
 
@@ -290,11 +287,11 @@ bulletHit = function(ply, tr, dmgInfo, bullet, Weapon)
 	end
 
 	local dist = trStart:DistToSqr(trPos)
-	if dist <= 160000 and (math.random(3) == 2 or force >= 30) and tr.Entity:IsWorld() and allowedMats[tr.MatType] then
+	if dist <= 160000 and (math.random(3) == 2 or force >= 35) and tr.Entity:IsWorld() and allowedMats[tr.MatType] then
 		util.Decal("Impact.ShootAdd" .. math.random(shootDecalRand), trPos + trNormal, trPos - trNormal)
 	end
 	
-	if force >= 30 and dist <= 1400000 and (math.random(3) == 2 or force >= 45) and !tr.Entity:IsRagdoll() then
+	if force >= 35 and dist <= 1400000 and (math.random(3) == 2 or force >= 45) and !tr.Entity:IsRagdoll() then
 		util.Decal("Impact.ShootPowderAdd", trPos + trNormal, trPos - trNormal)
 	end
 
