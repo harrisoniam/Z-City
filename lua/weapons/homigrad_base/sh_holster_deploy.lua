@@ -7,7 +7,7 @@ SWEP.DeploySnd = {"homigrad/weapons/draw_rifle.mp3", 65, 100, 110}
 
 --!! fix ts shit
 function SWEP:Step_HolsterDeploy(time)
-	self.deploy = self:GetDeploy() != 0 and self:GetDeploy() or nil\
+	self.deploy = self:GetDeploy() != 0 and self:GetDeploy() or nil
 	--self.holster = self:GetHolster() != 0 and self:GetHolster() or nil
 
 	if self.deploy and self.deploy < time then if self.Deploy_End then self:Deploy_End() end end
