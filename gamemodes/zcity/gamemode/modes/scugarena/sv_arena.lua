@@ -6,7 +6,7 @@ MODE.LootSpawn = false
 MODE.GuiltDisabled = true
 MODE.randomSpawns = true
 
-MODE.Chance = 0.01
+MODE.Chance = 0
 
 util.AddNetworkString("scugarena_start")
 util.AddNetworkString("scugarena_end")

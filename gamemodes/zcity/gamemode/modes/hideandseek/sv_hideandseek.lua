@@ -2,9 +2,9 @@ MODE.name = "hideandseek"
 MODE.PrintName = "Hide & Seek"
 
 --MODE.ForBigMaps = false
-MODE.ROUND_TIME = 600
+MODE.ROUND_TIME = 480
 
-MODE.Chance = 0.06
+MODE.Chance = 0.03
 
 function MODE.GuiltCheck(Attacker, Victim, add, harm, amt)
 	return 1, true--returning true so guilt bans
@@ -137,7 +137,7 @@ local tblotheritems = {
 		"weapon_medkit_sh", 
 		"weapon_tourniquet",
 		--"weapon_walkie_talkie",
-        "weapon_melee",
+        --"weapon_melee",
 		--"weapon_hg_grenade_tpik",
 		"weapon_hg_pipebomb_tpik",
 		"weapon_hg_molotov_tpik"
@@ -164,7 +164,7 @@ local tblarmors = {
     	{""}
 	},
 	[1] = { 
-		{"vest2"},
+		{"vest4"},
 		{"vest7"},
 		{"vest5"},
 		{""}
@@ -271,25 +271,6 @@ function MODE:GiveEquipment()
 				ply:SetSuppressPickupNotices(true)
 				ply.noSound = true
 
-				--[[
-				hook.Add("Player Think","hs_taunt",function(ply)
-					if not ply:Alive() then return end
-					--print("We are thinking!!")
-					-- TODO: Make sneezes and coughs play appropriate gender
-					local taunts = {
-						"zcitysnd/female/cough_"..math.random(1,4)..".mp3" or "zcitysnd/female/cough_"..math.random(1,4)..".mp3",
-						"zcitysnd/female/sneez_"..math.random(1,4)..".mp3" or "zcitysnd/male/sneez_"..math.random(1,4)..".mp3",
-						"snd_jack_hmcd_fart.wav",
-						"snd_jack_hmcd_burp.wav",
-					}
-					local event = taunts[math.random(#taunts)]
-
-					if CurTime() >= tauntTime then
-						ply:EmitSound()
-						tauntTime = CurTime() + math.random(3,5)
-					end
-				end)]]
-
 				hook.Run("hs_taunt")
 
 				ply:SetPlayerClass("hider")
@@ -320,7 +301,7 @@ function MODE:GiveEquipment()
 end
 
 function MODE:RoundThink()
-    if not swatSpawned and (CurTime() - zb.ROUND_BEGIN) >= 240 then
+    if not swatSpawned and (CurTime() - zb.ROUND_BEGIN) >= 180 then
         local deadPlayers = {}
 
         for _, ply in player.Iterator() do

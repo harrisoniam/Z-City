@@ -4,7 +4,7 @@ MODE.PrintName = "Crisis Response"
 MODE.ForBigMaps = false
 MODE.ROUND_TIME = 480
 
-MODE.Chance = 0.05
+MODE.Chance = 0.02
 
 function MODE.GuiltCheck(Attacker, Victim, add, harm, amt)
 	return 1, true--returning true so guilt bans
@@ -22,6 +22,7 @@ function MODE:AssignTeams()
 	local players = player.GetAll()
 	local numPlayers = #players
 	local numSWAT = 1
+	local numHOSTAGE = 0
 
 	if numPlayers <= 4 then
 		numSWAT = 1
@@ -29,23 +30,40 @@ function MODE:AssignTeams()
 		numSWAT = 2
 	elseif numPlayers == 6 then
 		numSWAT = 2
+		numHOSTAGE = 1
 	elseif numPlayers == 7 then
 		numSWAT = 3
-	elseif numPlayers >= 8 then -- возвращение великой elseif таблицы
+		numHOSTAGE = 1
+	elseif numPlayers >= 8 and numPlayers <= 13 then -- возвращение великой elseif таблицы
 		numSWAT = 4
+		numHOSTAGE = 2
+	elseif numPlayers >= 14 and numPlayers <= 19 then 
+		numSWAT = 4
+		numHOSTAGE = 3		
+	elseif numPlayers >= 20 then
+		numSWAT = 6
+		numHOSTAGE = 6
 	end
 
 	shuffle(players)
 
 	for i = 1, numSWAT do
 		if IsValid(players[i]) then 
-			players[i]:SetTeam(0)
+			players[i]:SetTeam(0) -- SWAT
 		end
 	end
 
+	-- methinks theres a better way to track this, but maybe im just insane.
+	local hostagesAssigned = 0
+
 	for i = numSWAT + 1, numPlayers do
 		if IsValid(players[i]) then 
-			players[i]:SetTeam(1)
+			if players[i]:GetConVar("hg_opt_hostage"):GetInt() == 0 then
+				players[i]:SetTeam(2) -- Hostage
+				hostagesAssigned = hostagesAssigned + 1
+			else
+				players[i]:SetTeam(1) -- Suspect
+			end
 		end
 	end
 end
@@ -211,6 +229,8 @@ function MODE:GiveEquipment()
 					ply:SetSuppressPickupNotices(false)
 					ply.noSound = false
 				end)
+			elseif ply:Team() == 2 then -- Hostages
+				ply:SetPlayerClass("hostage")
 			else
 				ply:SetSuppressPickupNotices(true)
 				ply.noSound = true
