@@ -53,7 +53,7 @@ hg.settings:AddOpt("Gameplay","hg_showthoughts", "Show thoughts")
 hg.settings:AddOpt("Gameplay","hg_hints", "Show hints")
 hg.settings:AddOpt("Gameplay","hg_gary", "HG GARY")
 hg.settings:AddOpt("Gameplay","hg_deathfadeout", "Death fade out")
-hg.settings:AddOpt("Gameplay","hg_opt_hostage", "Opt Out of Hostage")
+hg.settings:AddOpt("Gameplay","hg_opt_hostage", "Disable Hostage Chance (Crisis Response)")
 --hg_gary
 --hg_deathfadeout
 if not game.IsDedicated() then

@@ -58,7 +58,7 @@ function MODE:AssignTeams()
 
 	for i = numSWAT + 1, numPlayers do
 		if IsValid(players[i]) then 
-			if players[i]:GetConVar("hg_opt_hostage"):GetInt() == 0 then
+			if players[i]:GetInfoNum("hg_opt_hostage") == 0 then
 				players[i]:SetTeam(2) -- Hostage
 				hostagesAssigned = hostagesAssigned + 1
 			else
@@ -230,7 +230,16 @@ function MODE:GiveEquipment()
 					ply.noSound = false
 				end)
 			elseif ply:Team() == 2 then -- Hostages
+				ply:SetSuppressPickupNotices(true)
+				ply.noSound = true
+
 				ply:SetPlayerClass("hostage")
+				zb.GiveRole(ply, "Hostage", Color(122,122,122))
+				
+				local hands = ply:Give("weapon_hands_sh")
+
+				ply:SetSuppressPickupNotices(false)
+				ply.noSound = false
 			else
 				ply:SetSuppressPickupNotices(true)
 				ply.noSound = true
