@@ -68,8 +68,8 @@ end
 local posadd = 0
 function MODE:HUDPaint()
 
-	local timeBeforeSWAT = (zb.ROUND_START - CurTime() + 287)
-	if timeBeforeSWAT > 0 and zb.ROUND_START + 10.5 < CurTime() then
+	local timeBeforeSWAT = (zb.ROUND_START - CurTime() + 210)
+	if timeBeforeSWAT > 0 and zb.ROUND_START + 40 < CurTime() then
 		local time = string.FormattedTime(timeBeforeSWAT, "%02i:%02i:%02i")
 		local text = "00:00:00"
 		surface.SetFont("timer_Font2")
@@ -79,7 +79,7 @@ function MODE:HUDPaint()
 		surface.SetTextPos(sw * 0.5 - w2 / 2, sh * 0.05)
 		surface.DrawText(time)
 		surface.SetTextPos(sw * 0.5 - w2 / 2 + w, sh * 0.05)
-		surface.DrawText("time left before rescue arrives!")
+		surface.DrawText(" left before rescue arrives!")
 		//draw.SimpleText(" left before rescue arrives!", "timer_Font2", sw * 0.432, sh * 0.05, Color(255, 255, 255, 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 		//draw.SimpleText(time, "timer_Font2", sw * 0.36, sh * 0.05, Color(255, 255, 255, 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 	end
