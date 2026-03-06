@@ -58,7 +58,7 @@ function MODE:AssignTeams()
 
 	for i = numSWAT + 1, numPlayers do
 		if IsValid(players[i]) then 
-			if players[i]:GetInfoNum("hg_opt_hostage") == 0 then
+			if players[i]:GetInfoNum("hg_opt_hostage") == 0 and hostagesAssigned < numHOSTAGE then
 				players[i]:SetTeam(2) -- Hostage
 				hostagesAssigned = hostagesAssigned + 1
 			else
