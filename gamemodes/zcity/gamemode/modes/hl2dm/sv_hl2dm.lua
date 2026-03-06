@@ -1,7 +1,7 @@
 MODE.name = "hl2dm"
 MODE.PrintName = "Half-Life 2 Deathmatch"
 
-MODE.Chance = 0.05
+MODE.Chance = 0.03
 
 MODE.LootSpawn = false
 

@@ -6,6 +6,10 @@ if not ConVarExists("hg_newspectate") then
     CreateClientConVar("hg_newspectate", "1", true, false, "Enables smooth spectator camera transitions", 0, 1)
 end
 
+if not ConVarExists("hg_opt_hostage") then
+    CreateClientConVar("hg_opt_hostage", 0, true, true, "If enabled, you will not become a hostage.")
+end
+
 function CurrentRound()
 	return zb.modes[zb.CROUND]
 end

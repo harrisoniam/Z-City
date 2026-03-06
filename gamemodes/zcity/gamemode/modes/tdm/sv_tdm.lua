@@ -8,7 +8,7 @@ MODE.buymenu = true
 
 MODE.ROUND_TIME = 240
 
-MODE.Chance = 0.04
+MODE.Chance = 0.03
 
 function MODE.GuiltCheck(Attacker, Victim, add, harm, amt)
 	return 1, true--returning true so guilt bans
@@ -126,6 +126,7 @@ function MODE:GiveEquipment()
 
 			ply:Give("weapon_melee")
 			ply:Give("weapon_bandage_sh")
+			ply:Give("weapon_medkit_sh") -- Too powerful? Who cares!
 			ply:Give("weapon_tourniquet")
 			ply.organism.allowholster = true
 
