@@ -43,7 +43,8 @@ local Angle, Vector, AngleRand, VectorRand, math, hook, util, game = Angle, Vect
 		hg.approach_vector = approach_vector
 	--//
 
-	local hg_movement_stamina_debuff = CreateConVar("hg_movement_stamina_debuff","0.3",{FCVAR_REPLICATED,FCVAR_ARCHIVE,FCVAR_NOTIFY},"Multiply movement debuff when having low stamina",0,1)
+	local hg_movement_stamina_debuff = CreateConVar("hg_movement_stamina_debuff", "0.3", {FCVAR_REPLICATED,FCVAR_ARCHIVE,FCVAR_NOTIFY}, "Multiply movement debuff when having low stamina", 0, 1)
+	local hg_inertiamul = CreateConVar("hg_inertiamul", "1", {FCVAR_REPLICATED,FCVAR_ARCHIVE,FCVAR_NOTIFY}, "Multiply inertia for player movement", 0.01, 5)
 	local vecZero = Vector()
 	local vomitVPAng = Angle(1,0,0)
 	hook.Add("SetupMove", "HG(StartCommand)", function(ply, mv, cmd)
@@ -93,7 +94,7 @@ local Angle, Vector, AngleRand, VectorRand, math, hook, util, game = Angle, Vect
 			return
 		end
 
-		local runnin = ply:KeyDown(IN_SPEED) and not ply:Crouching()
+		local runnin = ply:KeyDown(IN_SPEED) and not ply:Crouching() and ply:KeyDown(IN_FORWARD)
 
 		if runnin then
 			--mv:SetSideSpeed(0) --meh
@@ -173,7 +174,7 @@ local Angle, Vector, AngleRand, VectorRand, math, hook, util, game = Angle, Vect
 		ply.FrictionGainMul = 0.01
 		ply.FrictionLoseMul = 0.2
 		ply.SpeedGainMul = 240 * weightmul * (ply.organism.superfighter and 5 or 1) * (ply:GetNWInt("SpeedGainClassMul", 1) or 1)
-		ply.SpeedLoseMul = 540
+		ply.SpeedLoseMul = 10000
 		ply.SpeedSharpLoseMul = 0.007
 		ply.InertiaBlend = 2000 * weightmul * (ply.organism.superfighter and 100 or 1)
 		ply.DuckingSlowdown = ply.DuckingSlowdown or 0
@@ -181,7 +182,7 @@ local Angle, Vector, AngleRand, VectorRand, math, hook, util, game = Angle, Vect
 		local inertia_blend_mul = 1
 
 		if(velLen <= slow_walk_speed)then
-			inertia_blend_mul = 3
+			inertia_blend_mul = 1
 		end
 
 		--[[
@@ -321,15 +322,20 @@ local Angle, Vector, AngleRand, VectorRand, math, hook, util, game = Angle, Vect
 			//if(water_level > 0)then
 			//	ply.CurrentFrictionMul = math.Approach(ply.CurrentFrictionMul, 0.2, delta_time * ply.FrictionLoseMul * water_level)
 			//else
-				ply.CurrentFrictionMul = math.Approach(ply.CurrentFrictionMul, consmul, delta_time * ply.FrictionGainMul * (consmul < ply.CurrentFrictionMul and 100 or 10))
+				// ply.CurrentFrictionMul = math.Approach(ply.CurrentFrictionMul, consmul, delta_time * ply.FrictionGainMul * (consmul < ply.CurrentFrictionMul and 100 or 10))
 			//end
 
+			ply.CurrentFrictionMul = 0.5 / hg_inertiamul:GetFloat()
 			ply.InertiaBlend = ply.InertiaBlend * ply.CurrentFrictionMul
 
 			-- local new_inertia = LerpVector(0.5^(delta_time * ply.InertiaBlend), ply.MovementInertia, inertia_to)
 			-- local new_inertia = LerpVector(1 - 0.5^(delta_time * ply.InertiaBlend), ply.MovementInertia, inertia_to)
 			//local new_inertia = approach_vector(ply.MovementInertia, inertia_to, 1000)//SERVER and delta_time * ply.InertiaBlend * ply:Ping() / 100 or delta_time * ply.InertiaBlend)
 			//local new_inertia = approach_vector_smooth(ply.MovementInertia, inertia_to, hg.lerpFrameTime2(0.075, delta_time))
+			if !ply:OnGround() then
+				ply.MovementInertia = ply.LastVelocity	
+			end
+
 			local new_inertia = approach_vector(ply.MovementInertia, inertia_to, delta_time * ply.InertiaBlend)
 
 			ply.MovementInertia = new_inertia
@@ -486,9 +492,9 @@ local Angle, Vector, AngleRand, VectorRand, math, hook, util, game = Angle, Vect
 			speed = speed + 200 * math.Round(org.noradrenaline, 1)
 		end
 
-		mv:SetMaxSpeed(speed)
-		mv:SetMaxClientSpeed(speed)
-		ply:SetMaxSpeed(speed)
+		mv:SetMaxSpeed(inertia_len)
+		mv:SetMaxClientSpeed(inertia_len)
+		ply:SetMaxSpeed(inertia_len)
 		ply:SetJumpPower(DEFAULT_JUMP_POWER * math.min(k, 1.1) * (not ply:GetNWBool("TauntStopMoving", false) and 1 or 0) * (ply.organism.superfighter and 1.5 or 1) * (ply.JumpPowerMul or 1))
 
 		if(CLIENT)then
@@ -500,6 +506,9 @@ local Angle, Vector, AngleRand, VectorRand, math, hook, util, game = Angle, Vect
 			cmd:SetForwardMove(forward_move * inertia_len)
 			cmd:SetSideMove(side_move * inertia_len)
 		end
+
+		mv:SetForwardSpeed(forward_move * inertia_len)
+		mv:SetSideSpeed(side_move * inertia_len)
 	end)
 --//
 
