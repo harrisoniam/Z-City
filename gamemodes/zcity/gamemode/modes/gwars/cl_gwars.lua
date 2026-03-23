@@ -78,7 +78,7 @@ function MODE:HUDPaint()
 		surface.SetTextPos(sw * 0.5 - w2 / 2, sh * 0.05)
 		surface.DrawText(time)
 		surface.SetTextPos(sw * 0.5 - w2 / 2 + w, sh * 0.05)
-		surface.DrawText("time left before SWAT arrives!")
+		surface.DrawText(" left before SWAT arrives!")
 		//draw.SimpleText(" left before SWAT arrives!", "timer_Font2", sw * 0.432, sh * 0.05, Color(255, 255, 255, 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 		//draw.SimpleText(time, "timer_Font2", sw * 0.36, sh * 0.05, Color(255, 255, 255, 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 	end
