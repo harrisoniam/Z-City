@@ -38,7 +38,7 @@ SWEP.WorkWithFake = true
 SWEP.offsetVec = Vector(4, -3.5, 0)
 SWEP.offsetAng = Angle(90, 90, 0)
 
-local hg_healanims = CreateConVar("hg_healanims", 0, FCVAR_SERVER_CAN_EXECUTE + FCVAR_ARCHIVE, "Toggle heal/food animations", 0, 1)
+local hg_healanims = CreateConVar("hg_healanims", 0, FCVAR_REPLICATED + FCVAR_ARCHIVE, "Toggle heal/food animations", 0, 1)
 
 modelshuy = modelshuy or {}
 
@@ -399,10 +399,13 @@ local function PhysCallback(ent, data)
 end
 
 local ents_Create, gamemod, clr_garbage = ents.Create, engine.ActiveGamemode(), Color(200, 200, 200)
+local gibRemoveTime = 60
 function SWEP:SpawnGarbage(mdl_custom, skin_custom, snd_custom, clr_custom, bgs_custom)
 	if CLIENT then return end
 
 	local owner = self:GetOwner()
+	if not IsValid(owner) then return end
+
 	local boneid
 	if IsValid(owner) then
 		if owner:IsPlayer() then
@@ -418,7 +421,7 @@ function SWEP:SpawnGarbage(mdl_custom, skin_custom, snd_custom, clr_custom, bgs_
 	if not matrix then return end
 
 	local ent = ents_Create("prop_physics")
-	ent:SetModel(Model((mdl_custom and mdl_custom ~= nil and isstring(mdl_custom)) and mdl_custom or self.WorldModel))
+	ent:SetModel(Model((mdl_custom and mdl_custom ~= "" and mdl_custom ~= nil and isstring(mdl_custom)) and mdl_custom or self.WorldModel))
 
 	if skin_custom and skin_custom ~= nil and isnumber(skin_custom) then
 		ent:SetSkin(skin_custom or 0)
@@ -452,8 +455,8 @@ function SWEP:SpawnGarbage(mdl_custom, skin_custom, snd_custom, clr_custom, bgs_
 
 	if zb.CROUND and zb.CROUND ~= "hmcd" or gamemod == "sandbox" then
 		ent:DrawShadow(false)
-		ent:SetModelScale(0, 60)
-		SafeRemoveEntityDelayed(ent, 60)
+		ent:SetModelScale(0.5, gibRemoveTime)
+		SafeRemoveEntityDelayed(ent, gibRemoveTime)
 	end
 end
 

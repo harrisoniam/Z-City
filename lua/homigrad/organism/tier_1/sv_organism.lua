@@ -93,6 +93,8 @@ hook.Add("Org Clear", "Main", function(org)
 	org.LodgedEntities = nil
 	
 	org.dmgstack = {}
+
+	org.SpawnedBrainChunks = nil
 end)
 
 hook.Add("Should Fake Up", "organism", function(ply)
@@ -102,11 +104,13 @@ hook.Add("Should Fake Up", "organism", function(ply)
 	end
 end)
 
+local hg_unreliable_nets = ConVarExists("hg_unreliable_nets") and GetConVar("hg_unreliable_nets") or CreateConVar("hg_unreliable_nets", 0, FCVAR_ARCHIVE + FCVAR_SERVER_CAN_EXECUTE, "Toggle unreliable net messages for some of the expensive nets", 0, 1)
+
 util.AddNetworkString("organism_send")
 util.AddNetworkString("organism_sendply")
 local CurTime = CurTime
 local nullTbl = {}
-local hg_developer = ConVarExists("hg_developer") and GetConVar("hg_developer") or CreateConVar("hg_developer",0,FCVAR_SERVER_CAN_EXECUTE,"Toggle developer mode (enables damage traces)",0,1)
+local hg_developer = ConVarExists("hg_developer") and GetConVar("hg_developer") or CreateConVar("hg_developer", 0, FCVAR_SERVER_CAN_EXECUTE, "Toggle developer mode (enables damage traces)", 0, 1)
 local function send_organism(org, ply)
 	if not IsValid(org.owner) then return end
 	local sendtable = {}
@@ -169,7 +173,7 @@ local function send_organism(org, ply)
 
 	sendtable.superfighter = org.superfighter
 
-	net.Start("organism_send")
+	net.Start("organism_send", hg_unreliable_nets:GetBool())
 	net.WriteTable(not hg_developer:GetBool() and sendtable or org)
 	net.WriteBool(org.owner.fullsend)
 	net.WriteBool(false)
@@ -225,7 +229,7 @@ local function send_bareinfo(org)
 	rf:AddPVS(org.owner:GetPos())
 	if org.owner:IsPlayer() then rf:RemovePlayer(org.owner) end
 
-	net.Start("organism_send")
+	net.Start("organism_send", hg_unreliable_nets:GetBool())
 	net.WriteTable(not hg_developer:GetBool() and sendtable or org)
 	net.WriteBool(org.owner.fullsend)
 	net.WriteBool(true)

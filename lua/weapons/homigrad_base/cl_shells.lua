@@ -128,12 +128,14 @@ function SWEP:MakeShell(shell, pos, ang, vel)
 			end
 
             if istable(t.s) then
-                ent:EmitSound(table.Random(t.s), 60, 100)   
+                ent:EmitSound(t.s[math.random(#t.s)], 60, 100)   
             end
         end
     end)
 
-	if not hg_shouldnt_autoremove:GetBool() and (zb.CROUND and zb.CROUND ~= "hmcd" or gamemod == "sandbox") then	
+	if not hg_shouldnt_autoremove:GetBool() and (zb.CROUND and zb.CROUND ~= "hmcd" or gamemod == "sandbox") then
+		ent:DrawShadow(false)
+		ent:SetModelScale(0, 10)
 		SafeRemoveEntityDelayed(ent, 10)
 	end
 end
@@ -147,7 +149,9 @@ function hg.CreateMag( self, vel, bodygroups, bDontChangePhys )
 	local owner = self:GetOwner()
 	if not IsValid(owner) then return end
 	
-	local matrix = self:GetWM():GetBoneMatrix(isnumber(self.FakeMagDropBone) and self.FakeMagDropBone or self:GetWM():LookupBone(self.FakeMagDropBone or "Magazine") or self:GetWM():LookupBone("ValveBiped.Bip01_L_Hand"))
+	local bone = isnumber(self.FakeMagDropBone) and self.FakeMagDropBone or self:GetWM():LookupBone(self.FakeMagDropBone or "Magazine") or self:GetWM():LookupBone("ValveBiped.Bip01_L_Hand")
+	if not bone then return end
+	local matrix = self:GetWM():GetBoneMatrix(bone)
 	
 
 	if not matrix then return end
